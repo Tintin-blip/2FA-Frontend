@@ -24,6 +24,7 @@
           <v-btn
             class="mt-6 mt-5"
             color="success"
+            :loading="loading"
             @click="validate"
           >
             Sign Up
@@ -37,7 +38,7 @@
         <p class="mb-1">Please scan the QR code to retrieve your authentication code</p>
       </div>
       <v-otp-input v-model="otpInput" :error="error" @input="validateOtp"></v-otp-input>
-      <v-btn class="send-btn" color="success" @click="submitOtp">Send code</v-btn>
+      <v-btn :loading="loading" class="send-btn" color="success" @click="submitOtp">Send code</v-btn>
       </v-form>
       
       <div v-if="success" class="container">
@@ -56,6 +57,7 @@
   const email = ref('');
   const password = ref('');
   const valid = ref(false);
+  const loading = ref(false)
   
   // FORM, OTP and data QR
   const form = ref(true);
@@ -85,6 +87,7 @@
     
     if (valid.value) {
     try {
+      loading.value = true
       let data = { 
         email:email.value,
         password:password.value
@@ -95,9 +98,13 @@
       idUser.value = response.data.data.id_user
       qrCodeData.value = response.data.data.qr
       form.value = false
+      loading.value = false
       otp.value = true
+
       }catch(error) { 
       selectedAlert.value = 'error-validate-fields'
+      loading.value = false
+
     }
   } 
   };
@@ -105,12 +112,17 @@
 
 const submitOtp = async() => {
   try{ 
+    loading.value = true
+
     let data = {inputUserCode:otpInput.value}
     await axios.post(`${import.meta.env.VITE_APP_URL_BACKEND}/users/${idUser.value}/enable/2fa`,data);
     otp.value = false;
     success.value = true;
+    loading.value = false
   }catch(err) {   
+    otpInput.value = ''
     error.value = true;
+    loading.value = false 
   }
 };  
   </script>
