@@ -35,7 +35,7 @@
       <v-form ref="formOTP" v-if="otp">
       <div class="text-center">
         <img :src="qrCodeData"  width="150" alt="QR Code" class="mx-auto mb-4">
-        <p class="mb-1">Please scan the QR code to retrieve your authentication code</p>
+        <p class="mb-1">Please scan the QR code with Google Authenticator to obtain your authentication code</p>
       </div>
       <v-otp-input v-model="otpInput" :error="error" @input="validateOtp"></v-otp-input>
       <v-btn :loading="loading" class="send-btn" color="success" @click="submitOtp">Send code</v-btn>
@@ -80,7 +80,7 @@
   
   const passwordRules = [
     v => !!v || 'Password is required',
-    v => (v && v.length >= 4) || 'Password must be at least 6 characters long',
+    v => (v && v.length >= 4) || 'Password must be at least 4 characters long',
   ];
   
   const validate = async() => {
